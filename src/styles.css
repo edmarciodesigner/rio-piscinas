@@ -1,21 +1,25 @@
 :root {
   --primary: #5e0449;
   --accent: #80286c;
-  --text: #626262;
-  --pale: #f8f3f7;
-  --line: #eadce7;
+  --accent-contrast: #edafe0;
+  --text: #ded8dd;
+  --heading: #ffffff;
+  --pale: #181218;
+  --line: #463344;
   --white: #fff;
   --radius: 12px;
+  color-scheme: dark;
 }
 * {
   box-sizing: border-box;
 }
 html {
   scroll-behavior: smooth;
+  background: #000;
 }
 body {
   margin: 0;
-  background: #fff;
+  background: #000;
   color: var(--text);
   font-family: Outfit, Arial, sans-serif;
   font-size: 17px;
@@ -70,7 +74,7 @@ p {
 h1,
 h2,
 h3 {
-  color: var(--primary);
+  color: var(--heading);
   font-weight: 700;
   line-height: 1.18;
 }
@@ -101,7 +105,7 @@ button:focus-visible,
 input:focus-visible,
 select:focus-visible,
 textarea:focus-visible {
-  outline: 3px solid var(--accent);
+  outline: 3px solid var(--accent-contrast);
 }
 [hidden] {
   display: none !important;
@@ -158,7 +162,7 @@ textarea:focus-visible {
   color: #fff;
 }
 header {
-  background: #fff;
+  background: #000;
 }
 .navigation {
   height: 88px;
@@ -186,10 +190,10 @@ header {
   gap: 8px;
 }
 .navigation nav a:hover {
-  color: var(--accent);
+  color: var(--accent-contrast);
 }
 .dealer {
-  color: var(--primary);
+  color: var(--accent-contrast);
 }
 .dealer svg {
   width: 18px;
@@ -206,7 +210,7 @@ header {
   top: 100%;
   left: -20px;
   width: 210px;
-  background: white;
+  background: #151015;
   box-shadow: 0 15px 40px #5e044922;
   border-radius: 8px;
   padding: 10px;
@@ -228,8 +232,8 @@ header {
   align-items: center;
   justify-content: center;
   gap: 9px;
-  border: 2px solid var(--primary);
-  color: var(--primary);
+  border: 2px solid var(--accent-contrast);
+  color: var(--accent-contrast);
   border-radius: 50px;
   padding: 8px 22px;
   font-weight: 400;
@@ -274,6 +278,7 @@ header {
 .button.white {
   background: white;
   border-color: white;
+  color: var(--primary);
 }
 .button.white:hover {
   background: var(--pale);
@@ -284,7 +289,7 @@ header {
   font-size: 13px;
   font-weight: 600;
   letter-spacing: 3px;
-  color: var(--accent);
+  color: var(--accent-contrast);
   margin-bottom: 10px;
 }
 .hero {
@@ -708,7 +713,7 @@ footer {
   font-weight: 400;
 }
 .footer-grid a:hover {
-  color: var(--accent);
+  color: var(--accent-contrast);
 }
 .footer-brand img {
   width: 100px;
@@ -784,7 +789,7 @@ footer {
   position: absolute;
   left: 15px;
   top: 14px;
-  color: var(--accent);
+  color: var(--accent-contrast);
 }
 .search-field input {
   padding-left: 48px;
@@ -856,7 +861,7 @@ footer {
   font-size: 13px;
 }
 .breadcrumb a {
-  color: var(--accent);
+  color: var(--accent-contrast);
 }
 .detail {
   display: grid;
@@ -886,7 +891,7 @@ footer {
   padding: 10px;
   font-size: 12px;
   background: var(--pale);
-  color: var(--primary);
+  color: var(--accent-contrast);
 }
 .image-button > span svg {
   width: 15px;
@@ -906,14 +911,14 @@ footer {
   font-size: 15px;
 }
 .features li::marker {
-  color: var(--accent);
+  color: var(--accent-contrast);
 }
 .text-link {
   display: block;
   margin-top: 20px;
   font-size: 14px;
   text-decoration: underline;
-  color: var(--accent);
+  color: var(--accent-contrast);
 }
 .thumbnails {
   display: flex;
@@ -931,7 +936,7 @@ footer {
 }
 .thumbnails button[aria-pressed="true"] {
   opacity: 1;
-  border-color: var(--accent);
+  border-color: var(--accent-contrast);
 }
 .thumbnails img {
   width: 100%;
@@ -1056,7 +1061,7 @@ footer {
   overflow-wrap: anywhere;
 }
 .contact-link svg {
-  color: var(--accent);
+  color: var(--accent-contrast);
 }
 form {
   padding: 35px;
@@ -1074,10 +1079,10 @@ select,
 textarea {
   width: 100%;
   padding: 13px 15px;
-  border: 1px solid #d4c3d0;
+  border: 1px solid var(--line);
   border-radius: 6px;
-  background: white;
-  color: #444;
+  background: #090909;
+  color: var(--text);
   font-size: 16px;
 }
 form input,
@@ -1132,6 +1137,7 @@ dialog {
   max-width: 650px;
   max-height: 85vh;
   color: var(--text);
+  background: #151015;
   box-shadow: 0 15px 80px #0003;
 }
 dialog::backdrop {
@@ -1162,7 +1168,7 @@ dialog::backdrop {
   border-radius: 6px;
   background: var(--pale);
   padding: 10px;
-  color: var(--primary);
+  color: var(--accent-contrast);
 }
 .search-results img {
   width: 80px;
@@ -1182,6 +1188,7 @@ dialog::backdrop {
   position: absolute;
   right: 12px;
   top: 10px;
+  color: #241323;
 }
 #image-dialog > img {
   max-height: 75vh;
@@ -1267,7 +1274,7 @@ main:focus {
     display: block;
     width: 42px;
     height: 42px;
-    color: var(--primary);
+    color: var(--accent-contrast);
   }
   .navigation nav {
     display: none;
@@ -1276,7 +1283,7 @@ main:focus {
     left: 0;
     right: 0;
     padding: 20px;
-    background: white;
+    background: #101010;
     box-shadow: 0 20px 25px #0001;
     z-index: 50;
     font-size: 16px;

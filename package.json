@@ -1,0 +1,1 @@
+{"name":"rio-piscinas","version":"1.0.0","private":true,"type":"module","scripts":{"build":"node scripts/build.mjs","check":"node --check src/app.js && node --check src/data.js && node scripts/check.mjs","dev":"npx --yes serve public -l 3000","preview":"npx --yes serve dist -l 3000"},"engines":{"node":">=20"}}

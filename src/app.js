@@ -1,47 +1,317 @@
-import {data} from './data.js';
-const {models,media,luxModels,catalogs}=data;
-const WA='https://wa.me/5521951018936';
-const ig='https://www.instagram.com/riopiscinasoficial/';
-const icons={arrow:'<path d="M4 12h16m-6-6 6 6-6 6"/>',chevron:'<path d="m9 5 7 7-7 7"/>',menu:'<path d="M4 6h16M4 12h16M4 18h16"/>',close:'<path d="m6 6 12 12M6 18 18 6"/>',search:'<circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/>',phone:'<path d="M7 3 3 6c0 8 7 15 15 15l3-4-5-3-2 2c-3-1-5-3-6-6l2-2Z"/>',instagram:'<rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><path d="M17.5 6.5h.01"/>',youtube:'<rect x="2" y="5" width="20" height="14" rx="4"/><path d="m10 9 5 3-5 3Z"/>',mail:'<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 6 9 7 9-7"/>',cube:'<path d="m12 2 9 5v10l-9 5-9-5V7Zm0 10 9-5M12 12 3 7m9 5v10"/>',whatsapp:'<path d="M21 11.5a9 9 0 0 1-13.4 8L3 21l1.5-4.6A9 9 0 1 1 21 11.5Z"/><path d="m8 7 2 3-1 1c1 2 2 3 4 4l1-1 3 2c-2 3-7 0-9-3-2-3-2-5 0-6Z"/>'};
-const icon=(n)=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${icons[n]||icons.arrow}</svg>`;
-const img=(src,alt,cls='',eager=false)=>`<img src="${src}" alt="${alt}" class="${cls}" ${eager?'fetchpriority="high"':'loading="lazy"'} decoding="async">`;
-const button=(href,text,extra='')=>`<a class="button ${extra}" href="${href}">${text}</a>`;
-const external=(href,text,cls='')=>`<a href="${href}" target="_blank" rel="noopener noreferrer" class="${cls}">${text}</a>`;
-const quote=(name='')=>`${WA}?text=${encodeURIComponent('Olá! Gostaria de receber um orçamento '+(name?'da piscina '+name: 'de uma piscina RiO')+'.')}`;
-let slide=0,timer;
-function header(){return `<div class="topbar"><div class="container"><a class="top-phone" href="tel:08007468000">Central de Atendimento: <b>0800 746 8000</b></a><div class="social">${external('https://www.facebook.com/RioPiscinasOficial/','<span aria-label="Facebook">f</span>')}${external(ig,icon('instagram'))}${external('https://www.youtube.com/channel/UCyLWJDIBoT7NQCOqZHZOkYQ',icon('youtube'))}<button class="search-toggle" aria-label="Buscar piscinas">${icon('search')}</button></div></div></div><header><div class="container navigation"><a href="#/" class="brand" aria-label="RiO Piscinas — início">${img(media.logo,'RiO Piscinas','',true)}</a><button class="mobile-toggle" aria-label="Abrir menu" aria-expanded="false" aria-controls="navigation">${icon('menu')}</button><nav id="navigation" aria-label="Menu principal"><a href="#/">Início</a><a href="#/empresa">Empresa</a><div class="dropdown"><a href="#/piscinas">Nossas piscinas <span>⌄</span></a><div class="dropdown-menu">${models.map(m=>`<a href="#/piscinas/${m.slug}">${m.name}</a>`).join('')}</div></div><a href="#/creativity-lux">Creativity Lux</a><a href="#/catalogos">Catálogos</a><a href="#/revendedor" class="dealer">Seja revendedor ${icon('arrow')}</a></nav></div></header>`}
-function footer(){return `<footer class="container"><div class="footer-grid"><div class="footer-brand"><a href="#/">${img(media.logo,'RiO Piscinas')}</a><p>Tecnologia, qualidade e paixão por transformar momentos de lazer.</p><small>© ${new Date().getFullYear()} RiO Piscinas.<br>Todos os direitos reservados.</small></div><div class="footer-contact"><p>Central de Atendimento</p><a href="tel:08007468000">0800 746 8000</a><p>WhatsApp</p>${external(WA,'(21) 95101-8936')}<p>E-mail</p><a href="mailto:contato@riopiscinas.com.br">contato@riopiscinas.com.br</a></div><div><h3>Piscinas</h3>${models.map(m=>`<a href="#/piscinas/${m.slug}">${m.name}</a>`).join('')}</div><div><h3>Institucional</h3><a href="#/empresa">Quem somos</a><a href="#/creativity-lux">Creativity Lux</a><a href="#/catalogos">Catálogos</a><a href="#/revendedor">Seja revendedor</a>${external(ig,'Instagram oficial')}</div><div><h3>Atendimento</h3><a href="#/contato">Fale com a RiO</a>${external('https://riopiscinas.com.br/sac/','SAC e garantia')}${external(quote(),'Solicitar orçamento')}<a href="#/privacidade">Privacidade</a></div></div><div class="footer-bottom">RiO Piscinas · Lazer em cada detalhe.</div></footer><a href="${quote()}" target="_blank" rel="noopener noreferrer" class="floating-wa" aria-label="Solicitar orçamento pelo WhatsApp">${icon('whatsapp')}</a>`}
-const slides=()=>[
- {image:media.hero,alt:'Piscina RiO com área de lazer integrada',href:'#/piscinas'},
- {image:models[3].banner,alt:'Conheça a linha RiO Tapajós',href:'#/piscinas/tapajos'},
- {image:models[0].banner,alt:'Conheça a linha RiO Paraná',href:'#/piscinas/parana'},
- {image:models[6].banner,alt:'Conheça a linha RiO Hualai',href:'#/piscinas/hualai'}];
-function hero(){return `<section class="hero container" aria-roledescription="carrossel" aria-label="Destaques RiO Piscinas"><div class="slides">${slides().map((s,i)=>`<a href="${s.href}" class="slide ${i===0?'active':''}" ${i?'inert':''} aria-label="${s.alt}">${img(s.image,s.alt,'',i===0)}</a>`).join('')}</div><button class="slide-arrow prev" aria-label="Banner anterior">${icon('chevron')}</button><button class="slide-arrow next" aria-label="Próximo banner">${icon('chevron')}</button><div class="slide-dots">${slides().map((s,i)=>`<button data-slide="${i}" aria-label="Ir para banner ${i+1}" aria-current="${i===0}"></button>`).join('')}</div><button class="slide-pause" aria-label="Pausar banners" aria-pressed="false">Ⅱ</button></section>`}
-function about(full=false){return `<section class="about container" id="sobre"><div class="about-visual"><div class="brand-shape"></div>${img(models[3].image,'Piscina RiO Tapajós instalada em uma área de lazer')}<a class="play" href="#/creativity-lux" aria-label="Conhecer a linha Creativity Lux">${icon('arrow')}</a></div><div class="about-copy"><span class="eyebrow">SOBRE NÓS</span><h${full?1:2}>Tecnologia e qualidade<br>para realizar sonhos</h${full?1:2}><p>Inovação, cuidado e paixão pelo lazer. Conheça a RiO Piscinas e descubra o que está por trás de cada momento especial.</p>${button('#/empresa','Conheça nossa história')}</div></section>`}
-function productCard(m){return `<a class="product-card" href="#/piscinas/${m.slug}">${img(m.image,m.name)}<div><span>LINHA RiO</span><h2>${m.name.replace('RiO ','')}</h2><span class="card-arrow">${icon('arrow')}</span></div></a>`}
-function categories(){const list=[models[3],models[0],models[1],models[6]];return `<section class="products container" aria-label="Linhas de piscinas"><div class="category-grid">${list.map(productCard).join('')}</div><div class="category-actions">${button('#/piscinas','TODAS AS PISCINAS','small')}${button('#/catalogos','Catálogos e plantas dos produtos','small muted')}</div></section>`}
-function augmented(){return `<section class="augmented container"><div class="ar-panel"><div class="ar-background">${img(models[3].image,'Piscina RiO Tapajós')}</div><div class="ar-copy"><span class="eyebrow">REALIDADE AUMENTADA</span><h2>Imagine sua nova<br>piscina no seu<br>ambiente</h2><p>Conheça nossos modelos e explore a experiência de realidade aumentada disponível nos materiais oficiais da RiO Piscinas.</p>${external('https://riopiscinas.com.br/catalogos/',icon('cube')+' Explore o catálogo oficial','button light')}</div><div class="phone-mockup"><div class="phone-notch"></div>${img(models[3].image,'Visualização de piscina RiO')}<span>Seu próximo momento RiO.</span></div></div></section>`}
-function territory(){return `<section class="territory container"><div>${img(media.map,'Mapa do Brasil — rede de revendas RiO Piscinas')}</div><div><span class="eyebrow">TERRITÓRIO NACIONAL</span><h2>Estamos presentes<br>em todo o Brasil</h2><p>Mais de 350 revendas para levar qualidade, lazer e diversão até você. Encontre a piscina ideal com o atendimento da nossa rede.</p>${external(quote(),'Encontre uma revenda','button')}</div></section>`}
-function social(){return `<section class="instagram container"><div class="social-grid">${[models[3],models[0],models[1],models[6],models[4],models[5]].map(m=>external(ig,img(m.image,`Conheça ${m.name} no Instagram da RiO Piscinas`))).join('')}</div><div><span class="eyebrow">INSTAGRAM</span><h2>Fique por dentro<br>das novidades da<br>RiO Piscinas</h2>${external(ig,'Seguir Instagram','button')}</div></section>`}
-function contactCTA(){return `<section class="contact-banner"><div class="contact-symbol">${icon('mail')}</div><div><h2>Seu sonho,<br><strong>mais perto.</strong></h2><p>Encontre a piscina ideal para<br>os seus melhores momentos.</p></div><div>${external(quote(),'Solicitar meu orçamento','button white')}<a href="tel:08007468000">ou ligue 0800 746 8000</a></div></section>`}
-function home(){return `${hero()}${about()}${categories()}${augmented()}${territory()}${social()}${contactCTA()}`}
-function heading(label,title,description=''){return `<div class="page-heading container"><span class="eyebrow">${label}</span><h1>${title}</h1>${description?`<p>${description}</p>`:''}</div>`}
-function catalogPage(){return `${heading('CATÁLOGOS','Inspire-se. Escolha. Realize.','Explore os catálogos oficiais da RiO Piscinas e conheça nossas linhas.')}<section class="catalog-grid container">${catalogs.map(c=>`<article>${img(c.image,'Catálogo '+c.name)}<h2>${c.name}</h2>${external(c.url,'Abrir catálogo '+icon('arrow'),'button')}</article>`).join('')}</section>${contactCTA()}`}
-function pools(){return `${heading('NOSSAS PISCINAS','Uma RiO para cada sonho.','Explore as sete linhas de piscinas da RiO e descubra qual combina com seu espaço.')}<div class="filter-container container"><label for="pool-search">Encontre sua piscina</label><div class="search-field">${icon('search')}<input type="search" id="pool-search" placeholder="Busque pelo nome da linha..." autocomplete="off"></div><p id="result-count" role="status">7 linhas disponíveis</p></div><section class="pool-grid container" aria-label="Catálogo de piscinas">${models.map(productCard).join('')}</section><p class="empty container" hidden>Nenhuma linha encontrada. Tente outro nome.</p>${contactCTA()}`}
-function detail(slug){const m=models.find(x=>x.slug===slug);if(!m)return notFound();return `<div class="breadcrumb container"><a href="#/piscinas">Nossas piscinas</a> / ${m.name}</div><section class="detail container"><div><button class="image-button" data-zoom="${m.image}" data-alt="${m.name}" aria-label="Ampliar imagem de ${m.name}">${img(m.image,m.name,'detail-main',true)}<span>Ampliar imagem ${icon('search')}</span></button><div class="thumbnails">${m.gallery.map((s,i)=>`<button data-gallery="${s}" aria-label="Ver foto ${i+1} de ${m.name}" aria-pressed="${i===0}">${img(s,m.name+' — foto '+(i+1))}</button>`).join('')}</div></div><div class="detail-copy"><span class="eyebrow">PISCINAS RiO</span><h1>${m.name}</h1><p>Durabilidade, resistência e um visual elegante para sua área de lazer. Uma piscina RiO para transformar o seu espaço em um lugar de bons momentos.</p><ul class="features"><li>Materiais de alta qualidade</li><li>Tecnologia de fabricação RiO Piscinas</li><li>Atendimento pela rede de revendas</li></ul>${external(quote(m.name),'Solicitar orçamento '+icon('arrow'),'button filled')}<a class="text-link" href="#/catalogos">Consultar catálogos</a></div></section><section class="technical container"><span class="eyebrow">DETALHES DO PRODUTO</span><h2>Conheça todos os detalhes</h2><button class="image-button technical-button" data-zoom="${m.technical}" data-alt="Ficha técnica ${m.name}" aria-label="Ampliar ficha técnica ${m.name}">${img(m.technical,'Ficha técnica oficial '+m.name)}<span>Ampliar ficha técnica ${icon('search')}</span></button>${data.colors&&slug!=='hualai'?`<h3>Cores disponíveis</h3>${img(data.colors,'Cores disponíveis conforme o catálogo oficial RiO Piscinas','color-chart')}`:''}${m.pdfs.length?`<h3>Plantas baixas oficiais</h3><div class="pdf-links">${m.pdfs.map(p=>external(p.url,p.label+' ↗','button small')).join('')}</div>`:''}<p class="muted-text">Confirme medidas, cores e disponibilidade com a revenda antes da compra.</p></section><section class="container related"><span class="eyebrow">EXPLORE TAMBÉM</span><h2>Outras linhas RiO</h2><div class="pool-grid">${models.filter(x=>x.slug!==slug).slice(0,3).map(productCard).join('')}</div></section>${contactCTA()}`}
-function company(){return `${heading('A RiO PISCINAS','Paixão pelo lazer.<br>Compromisso com você.')}<section class="company container">${img(models[0].image,'Piscina RiO Paraná em área externa')}<div><h2>Qualidade em cada detalhe</h2><p>A RiO Piscinas une tecnologia e cuidado para levar diversão e lazer aos nossos consumidores. Nossa equipe reúne profissionais com mais de 30 anos de experiência no mercado.</p><p>Buscamos continuamente inovação na fabricação e no atendimento. Cada piscina é desenvolvida para oferecer qualidade, resistência e uma experiência especial para sua família.</p><p>Com presença no Brasil e na América Latina, nossa rede de revendas aproxima você da piscina dos seus sonhos.</p>${external(quote(),'Fale com a RiO','button')}</div></section>${territory()}${contactCTA()}`}
-function luxPage(){return `${heading('CREATIVITY LUX','Imagine. Sonhe. Inspire.','Liberdade e versatilidade em menos tempo de obra, com piscinas em poliéster e revestimento cerâmico.')}<section class="lux-hero container">${img(media.lux,'Linha Creativity Lux','',true)}</section><section class="container lux-intro"><span class="eyebrow">SOFISTICAÇÃO PARA SEU LAZER</span><h2>O seu ambiente, com novas possibilidades.</h2><p>A linha Creativity Lux combina estrutura com reforço em fibra de vidro e revestimento cerâmico. Conheça os modelos e consulte as opções de acabamento com nossa equipe.</p></section><section class="lux-grid container">${luxModels.map(m=>`<article>${img(m.image,m.name)}<h2>${m.name}</h2><p>${m.size}</p>${external(quote(m.name),'Consultar modelo','button small')}</article>`).join('')}</section><section class="container official-video"><h2>Conheça a Creativity Lux</h2><video controls playsinline preload="none" poster="${media.lux}"><source src="https://riopiscinas.com.br/wp-content/uploads/2026/04/PrainhaCreativityLux.mp4" type="video/mp4">Seu navegador não suporta vídeo.</video></section>${contactCTA()}`}
-function contact(dealer=false){return `${heading(dealer?'FAÇA PARTE DA NOSSA REDE':'ATENDIMENTO',dealer?'Cresça junto com a RiO.':'Vamos realizar seu sonho?',dealer?'Leve a qualidade da RiO Piscinas para sua região. Entre em contato com nossa equipe comercial.':'Conte com a nossa equipe para encontrar a piscina ideal e tirar suas dúvidas.')}<section class="contact-layout container"><div>${img(dealer?models[0].image:models[3].image,'RiO Piscinas')}<h2>${dealer?'Uma rede de oportunidades.':'Estamos perto de você.'}</h2><p>${dealer?'Conheça as condições para fazer parte da nossa rede de revendas.':'Fale com a central ou solicite atendimento pelo WhatsApp.'}</p><a class="contact-link" href="tel:08007468000">${icon('phone')} 0800 746 8000</a><a class="contact-link" href="mailto:contato@riopiscinas.com.br">${icon('mail')} contato@riopiscinas.com.br</a></div><form id="contact-form" data-dealer="${dealer}"><h2>${dealer?'Quero ser revendedor':'Solicite seu orçamento'}</h2><label for="name">Seu nome</label><input id="name" name="name" required minlength="2" maxlength="100" autocomplete="name"><label for="city">Cidade e estado</label><input id="city" name="city" required maxlength="120" autocomplete="address-level2" placeholder="Ex.: Itaboraí, RJ"><label for="interest">${dealer?'Sua empresa':'Piscina de interesse'}</label>${dealer?'<input id="interest" name="interest" required maxlength="120" autocomplete="organization">':`<select id="interest" name="interest"><option>Quero ajuda para escolher</option>${models.map(m=>`<option>${m.name}</option>`).join('')}<option>Creativity Lux</option></select>`}<label for="message">Mensagem</label><textarea id="message" name="message" rows="4" maxlength="1500" placeholder="Conte um pouco sobre o que você procura."></textarea><label class="consent"><input type="checkbox" required> <span>Autorizo o envio dos dados preenchidos à RiO Piscinas pelo WhatsApp para atendimento. <a href="#/privacidade">Privacidade</a></span></label><button class="button filled" type="submit">Continuar no WhatsApp ${icon('whatsapp')}</button><p class="form-hint">Você poderá revisar a mensagem no WhatsApp antes de enviar.</p></form></section>`}
-function privacy(){return `${heading('PRIVACIDADE','Seus dados, com transparência.')}<article class="prose container"><h2>Informações deste site</h2><p>Este site apresenta as linhas de produtos da RiO Piscinas. Os formulários não armazenam dados em um banco de dados próprio. Ao continuar no WhatsApp, os campos preenchidos são incluídos em uma mensagem que você pode revisar antes de enviar à central RiO Piscinas.</p><h2>Serviços externos</h2><p>Links de catálogos, redes sociais e WhatsApp direcionam a serviços externos, sujeitos às respectivas políticas. As fontes tipográficas são carregadas pelo Google Fonts e o vídeo Creativity Lux é carregado a partir do site oficial da marca quando solicitado.</p><h2>Contato</h2><p>Para informações sobre atendimento e tratamento de dados pela RiO Piscinas, entre em contato em <a href="mailto:contato@riopiscinas.com.br">contato@riopiscinas.com.br</a>.</p></article>`}
-function notFound(){return `${heading('PÁGINA NÃO ENCONTRADA','Vamos voltar para a piscina?')}<div class="container">${button('#/','Voltar ao início')}</div>`}
-function setSlide(index){const count=slides().length;slide=(index+count)%count;document.querySelectorAll('.slide').forEach((s,i)=>{s.classList.toggle('active',i===slide);s.inert=i!==slide});document.querySelectorAll('[data-slide]').forEach((s,i)=>s.setAttribute('aria-current',String(i===slide)))}
-function closeDialog(){document.querySelector('dialog[open]')?.close()}
-function searchDialog(){const d=document.getElementById('search-dialog');d.showModal();d.querySelector('input').focus()}
-function bind(){document.querySelector('.mobile-toggle').addEventListener('click',e=>{const b=e.currentTarget;const open=b.getAttribute('aria-expanded')!=='true';b.setAttribute('aria-expanded',open);b.setAttribute('aria-label',open?'Fechar menu':'Abrir menu');document.querySelector('nav').classList.toggle('open',open)});document.querySelector('.search-toggle').onclick=searchDialog;document.querySelectorAll('[data-close]').forEach(b=>b.onclick=closeDialog);document.querySelectorAll('dialog').forEach(d=>d.addEventListener('click',e=>{if(e.target===d)d.close()}));
- document.getElementById('global-search').oninput=e=>{const q=e.target.value.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();const results=models.filter(m=>m.name.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().includes(q));document.querySelector('.search-results').innerHTML=results.length?results.map(m=>`<a href="#/piscinas/${m.slug}">${img(m.image,m.name)}<span>${m.name}</span>${icon('arrow')}</a>`).join(''):'<p>Nenhuma piscina encontrada.</p>'};document.getElementById('global-search').dispatchEvent(new Event('input'));
- document.querySelectorAll('[data-zoom]').forEach(b=>b.onclick=()=>{const d=document.getElementById('image-dialog');d.querySelector('img').src=b.dataset.zoom;d.querySelector('img').alt=b.dataset.alt;d.showModal()});document.querySelectorAll('[data-gallery]').forEach(b=>b.onclick=()=>{const image=document.querySelector('.detail-main');image.src=b.dataset.gallery;image.closest('button').dataset.zoom=b.dataset.gallery;document.querySelectorAll('[data-gallery]').forEach(t=>t.setAttribute('aria-pressed',String(t===b)))});
- const filter=document.getElementById('pool-search');if(filter)filter.oninput=()=>{const q=filter.value.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();let count=0;document.querySelectorAll('.pool-grid>.product-card').forEach(c=>{const visible=c.textContent.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().includes(q);c.hidden=!visible;if(visible)count++});document.getElementById('result-count').textContent=`${count} ${count===1?'linha encontrada':'linhas encontradas'}`;document.querySelector('.empty').hidden=count!==0};
- const form=document.getElementById('contact-form');if(form)form.onsubmit=e=>{e.preventDefault();if(!form.reportValidity())return;const f=new FormData(form);const message=`Olá! ${form.dataset.dealer==='true'?'Quero ser revendedor RiO Piscinas.':'Gostaria de solicitar um orçamento.'}\nNome: ${f.get('name').trim()}\nCidade/UF: ${f.get('city').trim()}\n${form.dataset.dealer==='true'?'Empresa':'Interesse'}: ${f.get('interest')}\n${f.get('message').trim()}`;window.open(`${WA}?text=${encodeURIComponent(message)}`,'_blank','noopener,noreferrer')};
- if(document.querySelector('.slides')){slide=0;setSlide(0);document.querySelector('.next').onclick=()=>setSlide(slide+1);document.querySelector('.prev').onclick=()=>setSlide(slide-1);document.querySelectorAll('[data-slide]').forEach(b=>b.onclick=()=>setSlide(Number(b.dataset.slide)));const pause=document.querySelector('.slide-pause');let paused=window.matchMedia('(prefers-reduced-motion: reduce)').matches;const sync=()=>{clearInterval(timer);pause.setAttribute('aria-pressed',paused);pause.setAttribute('aria-label',paused?'Retomar banners':'Pausar banners');pause.textContent=paused?'▷':'Ⅱ';if(!paused)timer=setInterval(()=>setSlide(slide+1),6500)};pause.onclick=()=>{paused=!paused;sync()};document.querySelector('.hero').addEventListener('keydown',e=>{if(e.key==='ArrowRight')setSlide(slide+1);if(e.key==='ArrowLeft')setSlide(slide-1)});sync()}}
-function render(){clearInterval(timer);const path=(location.hash.slice(1)||'/').split('?')[0];let content,title='RiO Piscinas | Seu lazer tem um novo destino';if(path==='/')content=home();else if(path==='/piscinas')content=pools();else if(path.startsWith('/piscinas/')){const slug=path.split('/')[2];content=detail(slug);title=(models.find(m=>m.slug===slug)?.name||'Piscinas')+' | RiO Piscinas'}else{const routes={'/empresa':[company,'Empresa'],'/catalogos':[catalogPage,'Catálogos'],'/creativity-lux':[luxPage,'Creativity Lux'],'/contato':[()=>contact(false),'Contato'],'/revendedor':[()=>contact(true),'Seja revendedor'],'/privacidade':[privacy,'Privacidade']};const route=routes[path];content=route?route[0]():notFound();title=(route?.[1]||'Página não encontrada')+' | RiO Piscinas'}document.title=title;document.getElementById('app').innerHTML=header()+`<main id="main" tabindex="-1">${content}</main>`+footer()+`<dialog id="search-dialog"><div class="dialog-top"><h2>Encontre sua RiO</h2><button data-close aria-label="Fechar busca">${icon('close')}</button></div><label for="global-search">Buscar por linha</label><input id="global-search" type="search" placeholder="Ex.: Tapajós"><div class="search-results" aria-live="polite"></div></dialog><dialog id="image-dialog"><button data-close aria-label="Fechar imagem">${icon('close')}</button><img alt=""></dialog>`;bind();window.scrollTo({top:0,behavior:'instant'});if(document.activeElement===document.body)document.querySelector('main').focus({preventScroll:true})}
-window.addEventListener('hashchange',render);render();
+import { data } from "./data.js";
+const { models, media, luxModels, catalogs } = data;
+const WA = "https://wa.me/5521951018936";
+const ig = "https://www.instagram.com/riopiscinasoficial/";
+const icons = {
+  arrow: '<path d="M4 12h16m-6-6 6 6-6 6"/>',
+  chevron: '<path d="m9 5 7 7-7 7"/>',
+  menu: '<path d="M4 6h16M4 12h16M4 18h16"/>',
+  close: '<path d="m6 6 12 12M6 18 18 6"/>',
+  search: '<circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/>',
+  phone: '<path d="M7 3 3 6c0 8 7 15 15 15l3-4-5-3-2 2c-3-1-5-3-6-6l2-2Z"/>',
+  instagram:
+    '<rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><path d="M17.5 6.5h.01"/>',
+  youtube:
+    '<rect x="2" y="5" width="20" height="14" rx="4"/><path d="m10 9 5 3-5 3Z"/>',
+  mail: '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 6 9 7 9-7"/>',
+  cube: '<path d="m12 2 9 5v10l-9 5-9-5V7Zm0 10 9-5M12 12 3 7m9 5v10"/>',
+  whatsapp:
+    '<path d="M21 11.5a9 9 0 0 1-13.4 8L3 21l1.5-4.6A9 9 0 1 1 21 11.5Z"/><path d="m8 7 2 3-1 1c1 2 2 3 4 4l1-1 3 2c-2 3-7 0-9-3-2-3-2-5 0-6Z"/>',
+};
+const icon = (n) =>
+  `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${icons[n] || icons.arrow}</svg>`;
+const img = (src, alt, cls = "", eager = false) =>
+  `<img src="${src}" alt="${alt}" class="${cls}" ${eager ? 'fetchpriority="high"' : 'loading="lazy"'} decoding="async">`;
+const button = (href, text, extra = "") =>
+  `<a class="button ${extra}" href="${href}">${text}</a>`;
+const external = (href, text, cls = "") =>
+  `<a href="${href}" target="_blank" rel="noopener noreferrer" class="${cls}">${text}</a>`;
+const quote = (name = "") =>
+  `${WA}?text=${encodeURIComponent("Olá! Gostaria de receber um orçamento " + (name ? "da piscina " + name : "de uma piscina RiO") + ".")}`;
+let slide = 0,
+  timer;
+function header() {
+  return `<div class="topbar"><div class="container"><a class="top-phone" href="tel:08007468000">Central de Atendimento: <b>0800 746 8000</b></a><div class="social">${external("https://www.facebook.com/RioPiscinasOficial/", '<span aria-label="Facebook">f</span>')}${external(ig, icon("instagram"))}${external("https://www.youtube.com/channel/UCyLWJDIBoT7NQCOqZHZOkYQ", icon("youtube"))}<button class="search-toggle" aria-label="Buscar piscinas">${icon("search")}</button></div></div></div><header><div class="container navigation"><a href="#/" class="brand" aria-label="RiO Piscinas — início">${img(media.logo, "RiO Piscinas", "", true)}</a><button class="mobile-toggle" aria-label="Abrir menu" aria-expanded="false" aria-controls="navigation">${icon("menu")}</button><nav id="navigation" aria-label="Menu principal"><a href="#/">Início</a><a href="#/empresa">Empresa</a><div class="dropdown"><a href="#/piscinas">Nossas piscinas <span>⌄</span></a><div class="dropdown-menu">${models.map((m) => `<a href="#/piscinas/${m.slug}">${m.name}</a>`).join("")}</div></div><a href="#/creativity-lux">Creativity Lux</a><a href="#/catalogos">Catálogos</a><a href="#/revendedor" class="dealer">Seja revendedor ${icon("arrow")}</a></nav></div></header>`;
+}
+function footer() {
+  return `<footer class="container"><div class="footer-grid"><div class="footer-brand"><a href="#/">${img(media.logo, "RiO Piscinas")}</a><p>Tecnologia, qualidade e paixão por transformar momentos de lazer.</p><small>© ${new Date().getFullYear()} RiO Piscinas.<br>Todos os direitos reservados.</small></div><div class="footer-contact"><p>Central de Atendimento</p><a href="tel:08007468000">0800 746 8000</a><p>WhatsApp</p>${external(WA, "(21) 95101-8936")}<p>E-mail</p><a href="mailto:contato@riopiscinas.com.br">contato@riopiscinas.com.br</a></div><div><h3>Piscinas</h3>${models.map((m) => `<a href="#/piscinas/${m.slug}">${m.name}</a>`).join("")}</div><div><h3>Institucional</h3><a href="#/empresa">Quem somos</a><a href="#/creativity-lux">Creativity Lux</a><a href="#/catalogos">Catálogos</a><a href="#/revendedor">Seja revendedor</a>${external(ig, "Instagram oficial")}</div><div><h3>Atendimento</h3><a href="#/contato">Fale com a RiO</a>${external("https://riopiscinas.com.br/sac/", "SAC e garantia")}${external(quote(), "Solicitar orçamento")}<a href="#/privacidade">Privacidade</a></div></div><div class="footer-bottom">RiO Piscinas · Lazer em cada detalhe.</div></footer><a href="${quote()}" target="_blank" rel="noopener noreferrer" class="floating-wa" aria-label="Solicitar orçamento pelo WhatsApp">${icon("whatsapp")}</a>`;
+}
+const slides = () => [
+  {
+    image: media.hero,
+    alt: "Piscina RiO com área de lazer integrada",
+    href: "#/piscinas",
+  },
+  {
+    image: models[3].banner,
+    alt: "Conheça a linha RiO Tapajós",
+    href: "#/piscinas/tapajos",
+  },
+  {
+    image: models[0].banner,
+    alt: "Conheça a linha RiO Paraná",
+    href: "#/piscinas/parana",
+  },
+  {
+    image: models[6].banner,
+    alt: "Conheça a linha RiO Hualai",
+    href: "#/piscinas/hualai",
+  },
+];
+function hero() {
+  return `<section class="hero container" aria-roledescription="carrossel" aria-label="Destaques RiO Piscinas"><div class="slides">${slides()
+    .map(
+      (s, i) =>
+        `<a href="${s.href}" class="slide ${i === 0 ? "active" : ""}" ${i ? "inert" : ""} aria-label="${s.alt}">${img(s.image, s.alt, "", i === 0)}</a>`,
+    )
+    .join(
+      "",
+    )}</div><button class="slide-arrow prev" aria-label="Banner anterior">${icon("chevron")}</button><button class="slide-arrow next" aria-label="Próximo banner">${icon("chevron")}</button><div class="slide-dots">${slides()
+    .map(
+      (s, i) =>
+        `<button data-slide="${i}" aria-label="Ir para banner ${i + 1}" aria-current="${i === 0}"></button>`,
+    )
+    .join(
+      "",
+    )}</div><button class="slide-pause" aria-label="Pausar banners" aria-pressed="false">Ⅱ</button></section>`;
+}
+function about(full = false) {
+  return `<section class="about container" id="sobre"><div class="about-visual"><div class="brand-shape"></div>${img(models[3].image, "Piscina RiO Tapajós instalada em uma área de lazer")}<a class="play" href="#/creativity-lux" aria-label="Conhecer a linha Creativity Lux">${icon("arrow")}</a></div><div class="about-copy"><span class="eyebrow">SOBRE NÓS</span><h${full ? 1 : 2}>Tecnologia e qualidade<br>para realizar sonhos</h${full ? 1 : 2}><p>Inovação, cuidado e paixão pelo lazer. Conheça a RiO Piscinas e descubra o que está por trás de cada momento especial.</p>${button("#/empresa", "Conheça nossa história")}</div></section>`;
+}
+function productCard(m) {
+  return `<a class="product-card" href="#/piscinas/${m.slug}">${img(m.image, m.name)}<div><span>LINHA RiO</span><h2>${m.name.replace("RiO ", "")}</h2><span class="card-arrow">${icon("arrow")}</span></div></a>`;
+}
+function categories() {
+  const list = [models[3], models[0], models[1], models[6]];
+  return `<section class="products container" aria-label="Linhas de piscinas"><div class="category-grid">${list.map(productCard).join("")}</div><div class="category-actions">${button("#/piscinas", "TODAS AS PISCINAS", "small")}${button("#/catalogos", "Catálogos e plantas dos produtos", "small muted")}</div></section>`;
+}
+function augmented() {
+  return `<section class="augmented container"><div class="ar-panel"><div class="ar-background">${img(models[3].image, "Piscina RiO Tapajós")}</div><div class="ar-copy"><span class="eyebrow">REALIDADE AUMENTADA</span><h2>Imagine sua nova<br>piscina no seu<br>ambiente</h2><p>Conheça nossos modelos e explore a experiência de realidade aumentada disponível nos materiais oficiais da RiO Piscinas.</p>${external("https://riopiscinas.com.br/catalogos/", icon("cube") + " Explore o catálogo oficial", "button light")}</div><div class="phone-mockup"><div class="phone-notch"></div>${img(models[3].image, "Visualização de piscina RiO")}<span>Seu próximo momento RiO.</span></div></div></section>`;
+}
+function territory() {
+  return `<section class="territory container"><div>${img(media.map, "Mapa do Brasil — rede de revendas RiO Piscinas")}</div><div><span class="eyebrow">TERRITÓRIO NACIONAL</span><h2>Estamos presentes<br>em todo o Brasil</h2><p>Mais de 350 revendas para levar qualidade, lazer e diversão até você. Encontre a piscina ideal com o atendimento da nossa rede.</p>${external(quote(), "Encontre uma revenda", "button")}</div></section>`;
+}
+function social() {
+  return `<section class="instagram container"><div class="social-grid">${[models[3], models[0], models[1], models[6], models[4], models[5]].map((m) => external(ig, img(m.image, `Conheça ${m.name} no Instagram da RiO Piscinas`))).join("")}</div><div><span class="eyebrow">INSTAGRAM</span><h2>Fique por dentro<br>das novidades da<br>RiO Piscinas</h2>${external(ig, "Seguir Instagram", "button")}</div></section>`;
+}
+function contactCTA() {
+  return `<section class="contact-banner"><div class="contact-symbol">${icon("mail")}</div><div><h2>Seu sonho,<br><strong>mais perto.</strong></h2><p>Encontre a piscina ideal para<br>os seus melhores momentos.</p></div><div>${external(quote(), "Solicitar meu orçamento", "button white")}<a href="tel:08007468000">ou ligue 0800 746 8000</a></div></section>`;
+}
+function home() {
+  return `<h1 class="sr-only">RiO Piscinas — tecnologia e qualidade para seu lazer</h1>${hero()}${about()}${categories()}${augmented()}${territory()}${social()}${contactCTA()}`;
+}
+function heading(label, title, description = "") {
+  return `<div class="page-heading container"><span class="eyebrow">${label}</span><h1>${title}</h1>${description ? `<p>${description}</p>` : ""}</div>`;
+}
+function catalogPage() {
+  return `${heading("CATÁLOGOS", "Inspire-se. Escolha. Realize.", "Explore os catálogos oficiais da RiO Piscinas e conheça nossas linhas.")}<section class="catalog-grid container">${catalogs.map((c) => `<article>${img(c.image, "Catálogo " + c.name)}<h2>${c.name}</h2>${external(c.url, "Abrir catálogo " + icon("arrow"), "button")}</article>`).join("")}</section>${contactCTA()}`;
+}
+function pools() {
+  return `${heading("NOSSAS PISCINAS", "Uma RiO para cada sonho.", "Explore as sete linhas de piscinas da RiO e descubra qual combina com seu espaço.")}<div class="filter-container container"><label for="pool-search">Encontre sua piscina</label><div class="search-field">${icon("search")}<input type="search" id="pool-search" placeholder="Busque pelo nome da linha..." autocomplete="off"></div><p id="result-count" role="status">7 linhas disponíveis</p></div><section class="pool-grid container" aria-label="Catálogo de piscinas">${models.map(productCard).join("")}</section><p class="empty container" hidden>Nenhuma linha encontrada. Tente outro nome.</p>${contactCTA()}`;
+}
+function detail(slug) {
+  const m = models.find((x) => x.slug === slug);
+  if (!m) return notFound();
+  return `<div class="breadcrumb container"><a href="#/piscinas">Nossas piscinas</a> / ${m.name}</div><section class="detail container"><div><button class="image-button" data-zoom="${m.image}" data-alt="${m.name}" aria-label="Ampliar imagem de ${m.name}">${img(m.image, m.name, "detail-main", true)}<span>Ampliar imagem ${icon("search")}</span></button><div class="thumbnails">${m.gallery.map((s, i) => `<button data-gallery="${s}" aria-label="Ver foto ${i + 1} de ${m.name}" aria-pressed="${i === 0}">${img(s, m.name + " — foto " + (i + 1))}</button>`).join("")}</div></div><div class="detail-copy"><span class="eyebrow">PISCINAS RiO</span><h1>${m.name}</h1><p>Durabilidade, resistência e um visual elegante para sua área de lazer. Uma piscina RiO para transformar o seu espaço em um lugar de bons momentos.</p><ul class="features"><li>Materiais de alta qualidade</li><li>Tecnologia de fabricação RiO Piscinas</li><li>Atendimento pela rede de revendas</li></ul>${external(quote(m.name), "Solicitar orçamento " + icon("arrow"), "button filled")}<a class="text-link" href="#/catalogos">Consultar catálogos</a></div></section><section class="technical container"><span class="eyebrow">DETALHES DO PRODUTO</span><h2>Conheça todos os detalhes</h2><button class="image-button technical-button" data-zoom="${m.technical}" data-alt="Ficha técnica ${m.name}" aria-label="Ampliar ficha técnica ${m.name}">${img(m.technical, "Ficha técnica oficial " + m.name)}<span>Ampliar ficha técnica ${icon("search")}</span></button>${data.colors && slug !== "hualai" ? `<h3>Cores disponíveis</h3>${img(data.colors, "Cores disponíveis conforme o catálogo oficial RiO Piscinas", "color-chart")}` : ""}${m.pdfs.length ? `<h3>Plantas baixas oficiais</h3><div class="pdf-links">${m.pdfs.map((p) => external(p.url, p.label + " ↗", "button small")).join("")}</div>` : ""}<p class="muted-text">Confirme medidas, cores e disponibilidade com a revenda antes da compra.</p></section><section class="container related"><span class="eyebrow">EXPLORE TAMBÉM</span><h2>Outras linhas RiO</h2><div class="pool-grid">${models
+    .filter((x) => x.slug !== slug)
+    .slice(0, 3)
+    .map(productCard)
+    .join("")}</div></section>${contactCTA()}`;
+}
+function company() {
+  return `${heading("A RiO PISCINAS", "Paixão pelo lazer.<br>Compromisso com você.")}<section class="company container">${img(models[0].image, "Piscina RiO Paraná em área externa")}<div><h2>Qualidade em cada detalhe</h2><p>A RiO Piscinas une tecnologia e cuidado para levar diversão e lazer aos nossos consumidores. Nossa equipe reúne profissionais com mais de 30 anos de experiência no mercado.</p><p>Buscamos continuamente inovação na fabricação e no atendimento. Cada piscina é desenvolvida para oferecer qualidade, resistência e uma experiência especial para sua família.</p><p>Com presença no Brasil e na América Latina, nossa rede de revendas aproxima você da piscina dos seus sonhos.</p>${external(quote(), "Fale com a RiO", "button")}</div></section>${territory()}${contactCTA()}`;
+}
+function luxPage() {
+  return `${heading("CREATIVITY LUX", "Imagine. Sonhe. Inspire.", "Liberdade e versatilidade em menos tempo de obra, com piscinas em poliéster e revestimento cerâmico.")}<section class="lux-hero container">${img(media.lux, "Linha Creativity Lux", "", true)}</section><section class="container lux-intro"><span class="eyebrow">SOFISTICAÇÃO PARA SEU LAZER</span><h2>O seu ambiente, com novas possibilidades.</h2><p>A linha Creativity Lux combina estrutura com reforço em fibra de vidro e revestimento cerâmico. Conheça os modelos e consulte as opções de acabamento com nossa equipe.</p></section><section class="lux-grid container">${luxModels.map((m) => `<article>${img(m.image, m.name)}<h2>${m.name}</h2><p>${m.size}</p>${external(quote(m.name), "Consultar modelo", "button small")}</article>`).join("")}</section><section class="container official-video"><h2>Conheça a Creativity Lux</h2><video controls playsinline preload="none" poster="${media.lux}"><source src="https://riopiscinas.com.br/wp-content/uploads/2026/04/PrainhaCreativityLux.mp4" type="video/mp4">Seu navegador não suporta vídeo.</video></section>${contactCTA()}`;
+}
+function contact(dealer = false) {
+  return `${heading(dealer ? "FAÇA PARTE DA NOSSA REDE" : "ATENDIMENTO", dealer ? "Cresça junto com a RiO." : "Vamos realizar seu sonho?", dealer ? "Leve a qualidade da RiO Piscinas para sua região. Entre em contato com nossa equipe comercial." : "Conte com a nossa equipe para encontrar a piscina ideal e tirar suas dúvidas.")}<section class="contact-layout container"><div>${img(dealer ? models[0].image : models[3].image, "RiO Piscinas")}<h2>${dealer ? "Uma rede de oportunidades." : "Estamos perto de você."}</h2><p>${dealer ? "Conheça as condições para fazer parte da nossa rede de revendas." : "Fale com a central ou solicite atendimento pelo WhatsApp."}</p><a class="contact-link" href="tel:08007468000">${icon("phone")} 0800 746 8000</a><a class="contact-link" href="mailto:contato@riopiscinas.com.br">${icon("mail")} contato@riopiscinas.com.br</a></div><form id="contact-form" data-dealer="${dealer}"><h2>${dealer ? "Quero ser revendedor" : "Solicite seu orçamento"}</h2><label for="name">Seu nome</label><input id="name" name="name" required minlength="2" maxlength="100" autocomplete="name"><label for="city">Cidade e estado</label><input id="city" name="city" required maxlength="120" autocomplete="address-level2" placeholder="Ex.: Itaboraí, RJ"><label for="interest">${dealer ? "Sua empresa" : "Piscina de interesse"}</label>${dealer ? '<input id="interest" name="interest" required maxlength="120" autocomplete="organization">' : `<select id="interest" name="interest"><option>Quero ajuda para escolher</option>${models.map((m) => `<option>${m.name}</option>`).join("")}<option>Creativity Lux</option></select>`}<label for="message">Mensagem</label><textarea id="message" name="message" rows="4" maxlength="1500" placeholder="Conte um pouco sobre o que você procura."></textarea><label class="consent"><input type="checkbox" required> <span>Autorizo o envio dos dados preenchidos à RiO Piscinas pelo WhatsApp para atendimento. <a href="#/privacidade">Privacidade</a></span></label><button class="button filled" type="submit">Continuar no WhatsApp ${icon("whatsapp")}</button><p class="form-hint">Você poderá revisar a mensagem no WhatsApp antes de enviar.</p></form></section>`;
+}
+function privacy() {
+  return `${heading("PRIVACIDADE", "Seus dados, com transparência.")}<article class="prose container"><h2>Informações deste site</h2><p>Este site apresenta as linhas de produtos da RiO Piscinas. Os formulários não armazenam dados em um banco de dados próprio. Ao continuar no WhatsApp, os campos preenchidos são incluídos em uma mensagem que você pode revisar antes de enviar à central RiO Piscinas.</p><h2>Serviços externos</h2><p>Links de catálogos, redes sociais e WhatsApp direcionam a serviços externos, sujeitos às respectivas políticas. As fontes tipográficas são carregadas pelo Google Fonts e o vídeo Creativity Lux é carregado a partir do site oficial da marca quando solicitado.</p><h2>Contato</h2><p>Para informações sobre atendimento e tratamento de dados pela RiO Piscinas, entre em contato em <a href="mailto:contato@riopiscinas.com.br">contato@riopiscinas.com.br</a>.</p></article>`;
+}
+function notFound() {
+  return `${heading("PÁGINA NÃO ENCONTRADA", "Vamos voltar para a piscina?")}<div class="container">${button("#/", "Voltar ao início")}</div>`;
+}
+function setSlide(index) {
+  const count = slides().length;
+  slide = (index + count) % count;
+  document.querySelectorAll(".slide").forEach((s, i) => {
+    s.classList.toggle("active", i === slide);
+    s.inert = i !== slide;
+  });
+  document
+    .querySelectorAll("[data-slide]")
+    .forEach((s, i) => s.setAttribute("aria-current", String(i === slide)));
+}
+function closeDialog() {
+  document.querySelector("dialog[open]")?.close();
+}
+function searchDialog() {
+  const d = document.getElementById("search-dialog");
+  d.showModal();
+  d.querySelector("input").focus();
+}
+function bind() {
+  document.querySelector(".mobile-toggle").addEventListener("click", (e) => {
+    const b = e.currentTarget;
+    const open = b.getAttribute("aria-expanded") !== "true";
+    b.setAttribute("aria-expanded", open);
+    b.setAttribute("aria-label", open ? "Fechar menu" : "Abrir menu");
+    document.querySelector("nav").classList.toggle("open", open);
+  });
+  document.querySelector(".search-toggle").onclick = searchDialog;
+  document
+    .querySelectorAll("[data-close]")
+    .forEach((b) => (b.onclick = closeDialog));
+  document.querySelectorAll("dialog").forEach((d) =>
+    d.addEventListener("click", (e) => {
+      if (e.target === d) d.close();
+    }),
+  );
+  document.getElementById("global-search").oninput = (e) => {
+    const q = e.target.value
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .toLowerCase();
+    const results = models.filter((m) =>
+      m.name
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toLowerCase()
+        .includes(q),
+    );
+    document.querySelector(".search-results").innerHTML = results.length
+      ? results
+          .map(
+            (m) =>
+              `<a href="#/piscinas/${m.slug}">${img(m.image, m.name)}<span>${m.name}</span>${icon("arrow")}</a>`,
+          )
+          .join("")
+      : "<p>Nenhuma piscina encontrada.</p>";
+  };
+  document.getElementById("global-search").dispatchEvent(new Event("input"));
+  document.querySelectorAll("[data-zoom]").forEach(
+    (b) =>
+      (b.onclick = () => {
+        const d = document.getElementById("image-dialog");
+        d.querySelector("img").src = b.dataset.zoom;
+        d.querySelector("img").alt = b.dataset.alt;
+        d.showModal();
+      }),
+  );
+  document.querySelectorAll("[data-gallery]").forEach(
+    (b) =>
+      (b.onclick = () => {
+        const image = document.querySelector(".detail-main");
+        image.src = b.dataset.gallery;
+        image.closest("button").dataset.zoom = b.dataset.gallery;
+        document
+          .querySelectorAll("[data-gallery]")
+          .forEach((t) => t.setAttribute("aria-pressed", String(t === b)));
+      }),
+  );
+  const filter = document.getElementById("pool-search");
+  if (filter)
+    filter.oninput = () => {
+      const q = filter.value
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toLowerCase();
+      let count = 0;
+      document.querySelectorAll(".pool-grid>.product-card").forEach((c) => {
+        const visible = c.textContent
+          .normalize("NFD")
+          .replace(/[\u0300-\u036f]/g, "")
+          .toLowerCase()
+          .includes(q);
+        c.hidden = !visible;
+        if (visible) count++;
+      });
+      document.getElementById("result-count").textContent =
+        `${count} ${count === 1 ? "linha encontrada" : "linhas encontradas"}`;
+      document.querySelector(".empty").hidden = count !== 0;
+    };
+  const form = document.getElementById("contact-form");
+  if (form)
+    form.onsubmit = (e) => {
+      e.preventDefault();
+      if (!form.reportValidity()) return;
+      const f = new FormData(form);
+      const message = `Olá! ${form.dataset.dealer === "true" ? "Quero ser revendedor RiO Piscinas." : "Gostaria de solicitar um orçamento."}\nNome: ${f.get("name").trim()}\nCidade/UF: ${f.get("city").trim()}\n${form.dataset.dealer === "true" ? "Empresa" : "Interesse"}: ${f.get("interest")}\n${f.get("message").trim()}`;
+      window.open(
+        `${WA}?text=${encodeURIComponent(message)}`,
+        "_blank",
+        "noopener,noreferrer",
+      );
+    };
+  if (document.querySelector(".slides")) {
+    slide = 0;
+    setSlide(0);
+    document.querySelector(".next").onclick = () => setSlide(slide + 1);
+    document.querySelector(".prev").onclick = () => setSlide(slide - 1);
+    document
+      .querySelectorAll("[data-slide]")
+      .forEach((b) => (b.onclick = () => setSlide(Number(b.dataset.slide))));
+    const pause = document.querySelector(".slide-pause");
+    let paused = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const sync = () => {
+      clearInterval(timer);
+      pause.setAttribute("aria-pressed", paused);
+      pause.setAttribute(
+        "aria-label",
+        paused ? "Retomar banners" : "Pausar banners",
+      );
+      pause.textContent = paused ? "▷" : "Ⅱ";
+      if (!paused) timer = setInterval(() => setSlide(slide + 1), 6500);
+    };
+    pause.onclick = () => {
+      paused = !paused;
+      sync();
+    };
+    document.querySelector(".hero").addEventListener("keydown", (e) => {
+      if (e.key === "ArrowRight") setSlide(slide + 1);
+      if (e.key === "ArrowLeft") setSlide(slide - 1);
+    });
+    sync();
+  }
+}
+function render() {
+  clearInterval(timer);
+  const path = (location.hash.slice(1) || "/").split("?")[0];
+  let content,
+    title = "RiO Piscinas | Seu lazer tem um novo destino";
+  if (path === "/") content = home();
+  else if (path === "/piscinas") content = pools();
+  else if (path.startsWith("/piscinas/")) {
+    const slug = path.split("/")[2];
+    content = detail(slug);
+    title =
+      (models.find((m) => m.slug === slug)?.name || "Piscinas") +
+      " | RiO Piscinas";
+  } else {
+    const routes = {
+      "/empresa": [company, "Empresa"],
+      "/catalogos": [catalogPage, "Catálogos"],
+      "/creativity-lux": [luxPage, "Creativity Lux"],
+      "/contato": [() => contact(false), "Contato"],
+      "/revendedor": [() => contact(true), "Seja revendedor"],
+      "/privacidade": [privacy, "Privacidade"],
+    };
+    const route = routes[path];
+    content = route ? route[0]() : notFound();
+    title = (route?.[1] || "Página não encontrada") + " | RiO Piscinas";
+  }
+  document.title = title;
+  document.getElementById("app").innerHTML =
+    header() +
+    `<main id="main" tabindex="-1">${content}</main>` +
+    footer() +
+    `<dialog id="search-dialog"><div class="dialog-top"><h2>Encontre sua RiO</h2><button data-close aria-label="Fechar busca">${icon("close")}</button></div><label for="global-search">Buscar por linha</label><input id="global-search" type="search" placeholder="Ex.: Tapajós"><div class="search-results" aria-live="polite"></div></dialog><dialog id="image-dialog"><button data-close aria-label="Fechar imagem">${icon("close")}</button><img alt=""></dialog>`;
+  bind();
+  window.scrollTo({ top: 0, behavior: "instant" });
+  if (document.activeElement === document.body)
+    document.querySelector("main").focus({ preventScroll: true });
+}
+window.addEventListener("hashchange", render);
+render();
